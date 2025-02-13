@@ -1,0 +1,90 @@
+/* UFC inspired design */
+.container {
+  width: 100%;
+  max-width: auto;
+  max-height: 70%;
+  height: 50%;
+  margin: 0 auto; /* Centers the section */
+  padding: 60px 20px;
+  background-color: white; 
+  text-align: center;
+}
+
+/* Section Title */
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  color: black;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #d40000; /* UFC Red */
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Responsive event card grid */
+.eventsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+/* Individual Event Card */
+.eventCard {
+  background-color: #222; /* Dark gray UFC theme */
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 6px solid #d40000; /* UFC Red */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.eventCard:hover {
+  transform: scale(1.05);
+  border-left-color: white;
+}
+
+/* Event Titles */
+.eventTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* Event Metadata */
+.eventDate,
+.eventLocation,
+.eventDescription {
+  font-size: 16px;
+  color: #bbb; /* Light gray for readability */
+  margin: 5px 0;
+}
+
+/* RESPONSIVENESS */
+@media (max-width: 768px) {
+  .container {
+    padding: 40px 15px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .eventsList {
+    grid-template-columns: 1fr;
+  }
+
+  .eventCard {
+    padding: 15px;
+  }
+
+  .eventTitle {
+    font-size: 18px;
+  }
+}

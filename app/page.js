@@ -1,95 +1,119 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
+import Events from "../components/Events";
+import { supabase } from "../utils/supabase";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
+  // hydration
+  useEffect(() => {
+    setHydrated(true);
+    fetchPlayers();
+  }, []);
+
+  const fetchPlayers = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("players")
+        .select("*")
+        .order("blitz_rank", { ascending: true })
+        .order("rapid_rank", { ascending: true })
+        .order("overall_rank", { ascending: true });
+
+      if (error) throw error;
+      setPlayers(data || []);
+    } catch (error) {
+      console.error("Error fetching players:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // There's a champion for each category
+  const getChampion = (category) => {
+    if (!hydrated || loading || !players.length) return "Loading...";
+    switch (category) {
+      case "Blitz":
+        return players.find((player) => player.blitz_rank === 1)?.name || "N/A";
+      case "Rapid":
+        return players.find((player) => player.rapid_rank === 1)?.name || "N/A";
+      case "Ultimate":
+        return players.find((player) => player.overall_rank === 1)?.name || "N/A";
+      default:
+        return "N/A";
+    }
+  };
+
+  // Getting players for each category
+  const getPlayersForCategory = (category) => {
+    if (!hydrated || loading || !players.length) return [];
+
+    let sortedPlayers;
+    switch (category) {
+      case "Blitz":
+        sortedPlayers = [...players].sort((a, b) => a.blitz_rank - b.blitz_rank);
+        break;
+      case "Rapid":
+        sortedPlayers = [...players].sort((a, b) => a.rapid_rank - b.rapid_rank);
+        break;
+      case "Ultimate":
+        sortedPlayers = [...players].sort((a, b) => a.overall_rank - b.overall_rank);
+        break;
+      default:
+        sortedPlayers = [];
+    }
+
+    return sortedPlayers.map((player) => player.name);
+  };
+
+  if (!hydrated) {
+    return <p className={styles.loading}>Loading rankings...</p>;
+  }
+
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1>Chess Rankings</h1>
+        <p>
+          LHSS Chess Club <br />
+          Meetings - Every Wednesday at lunch Room 1705 <br />
+          Class code - 7zxrcd2
+        </p>
+      </header>
+      <main className={styles.mainContainer}>
+        <RankingSection title="Blitz Champion" champion={getChampion("Blitz")} players={getPlayersForCategory("Blitz")} />
+        <RankingSection title="Rapid Champion" champion={getChampion("Rapid")} players={getPlayersForCategory("Rapid")} />
+        <RankingSection title="Ultimate Champion" champion={getChampion("Ultimate")} players={getPlayersForCategory("Ultimate")} />
       </main>
+      <Events />
       <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+        <p>© 2025 Chess Rankings. All Rights Reserved.</p>
       </footer>
     </div>
+  );
+}
+
+function RankingSection({ title, champion, players = [] }) {
+  return (
+    <section className={styles.rankingSection}>
+      <h2>{title}</h2>
+      <div className={styles.championCard}>
+        <span className={styles.championName}>{champion}</span>
+        <Image src="/bishop.png" alt="Champion" width={100} height={100} className={styles.championImg} />
+      </div>
+      <h3>Top Players</h3>
+      <ol className={styles.playerList}>
+        {players.map((player, index) => (
+          <li key={index}>{player}</li>
+        ))}
+      </ol>
+    </section>
   );
 }
