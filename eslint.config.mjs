@@ -7,6 +7,9 @@ const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
+  parserOptions:{
+    ecmaVersion: "latest",
+  },
 });
 
 const eslintConfig = [...compat.extends("next/core-web-vitals")];
