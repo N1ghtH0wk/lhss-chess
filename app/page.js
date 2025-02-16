@@ -11,6 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [hydrated, setHydrated] = useState(false);
 
+
   // hydration
   useEffect(() => {
     setHydrated(true);
@@ -36,6 +37,8 @@ export default function Home() {
     }
   };
   
+
+
   // There's a champion for each category
   const getChampion = (category) => {
     if (!hydrated || loading || !players.length) return "Loading...";

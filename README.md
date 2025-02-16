@@ -2,7 +2,7 @@ This is a Laurel Height's Chess Club repo.
 
 I'm using [Next.js](https://nextjs.org), and [Supabase](https://supabase.com/)
 
-Low-key I need tests and auto-documentation.
+Low-key I need tests and auto-documentation.    
 
 
 ## Getting Started

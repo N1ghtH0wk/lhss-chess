@@ -2,28 +2,35 @@
 
 import React from "react";
 import styles from "./Events.module.css";
+import { useState, useEffect } from "react";
+import { supabase } from "../utils/supabase";
 
 function Events() {
-  const events = [
-    {
-      title: "Rapid tournament",
-      date: "Feb 19",
-      location: "Room 1705",
-      description: "Single Round Robin 10+0",
-    },
-    {
-      title: "Blitz tournament",
-      date: "Feb 26",
-      location: "Room 1705",
-      description: "Double Round Robin 5+0",
-    },
-    {
-      title: "Bullet tournament",
-      date: "March 5",
-      location: "Room 1705",
-      description: "Swiss System 1+2",
-    },
-  ];
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.from("events").select("*");
+
+      if (error) throw error;
+      setEvents(data || []);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getEvents = () => {
+    if (!hydrated || loading || !events.length) return [];
+    return events;
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -31,10 +38,10 @@ function Events() {
       <div className={styles.eventsList}>
         {events.map((event, index) => (
           <div key={index} className={styles.eventCard}>
-            <h3 className={styles.eventTitle}>{event.title}</h3>
-            <p className={styles.eventDate}>{event.date}</p>
-            <p className={styles.eventLocation}>{event.location}</p>
-            <p className={styles.eventDescription}>{event.description}</p>
+            <h3 className={styles.eventTitle}>{event.Title}</h3>
+            <p className={styles.eventDate}>{event.description}</p>
+            <p className={styles.eventLocation}>Starts {event.start_date}</p>
+            <p className={styles.eventDescription}>Rounds: {event.rounds}</p>
           </div>
         ))}
       </div>
