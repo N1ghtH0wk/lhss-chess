@@ -1,3 +1,4 @@
+# LHSS Chess Club
 This is a Laurel Height's Chess Club repo.
 
 I'm using [Next.js](https://nextjs.org), and [Supabase](https://supabase.com/)
@@ -5,6 +6,9 @@ I'm using [Next.js](https://nextjs.org), and [Supabase](https://supabase.com/)
 Low-key I need tests and auto-documentation.    
 
 
+## Database schema
+![alt text](image.png)
+Maybe after the tournament ends, I can put up final standings in json format. 
 ## Getting Started
 
 First, run the development server:
