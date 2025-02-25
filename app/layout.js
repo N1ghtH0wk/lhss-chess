@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "LHSS Chess",
   description: "Laurel Height's Secondary School Chess Club. Meetings - Every Wednesday at lunch Room 1705",
+  icons: {
+    icon: "/queen.png",
+  },
 };
 
 export default function RootLayout({ children }) {
